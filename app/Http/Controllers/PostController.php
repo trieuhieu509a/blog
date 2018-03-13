@@ -46,8 +46,8 @@ class PostController extends Controller
     public function postAdminCreate(Request $request)
     {
         $this->validate($request, [
-            'title' => 'required|min:5|unique:posts',
-            'content' => 'required|min:10'
+            'title' => 'required|min:2|unique:posts',
+            'content' => 'required|min:2'
         ]);
         $user = Auth::user();
         $post = new Post([
@@ -57,14 +57,14 @@ class PostController extends Controller
         $user->posts()->save($post);
         //$post->save();
 
-        return redirect()->route('admin.index')->with('info', 'Post created, Title is: ' . $request->input('title'));
+        return redirect()->route('admin.index')->with('info', 'Post ' . $request->input('title') . ' created');
     }
 
     public function postAdminUpdate(Request $request)
     {
         $this->validate($request, [
-            'title' => 'required|min:5|unique:posts,title,'. $request->input('id'),
-            'content' => 'required|min:10'
+            'title' => 'required|min:2|unique:posts,title,'. $request->input('id'),
+            'content' => 'required|min:2'
         ]);
         $post = Post::find($request->input('id'));
         if (Gate::denies('update-post', $post)) {
@@ -74,6 +74,6 @@ class PostController extends Controller
         $post->content = $request->input('content');
         $post->is_active = $request->input('is_active', 0);
         $post->save();
-        return redirect()->route('admin.index')->with('info', 'Post edited, new Title is: ' . $request->input('title'));
+        return redirect()->route('admin.index')->with('info', 'Post '. $request->input('title') .'edited');
     }
 }
